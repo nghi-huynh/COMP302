@@ -69,10 +69,16 @@ let nnf_tests = [(Conj(Atom "p",Neg(Disj (Atom "q",Atom"r"))),Conj ( Atom "p",Co
 (* TODO: Implement nnf. *)
 let rec nnf p  = 
   match p with 
-  |Atom x->Atom x
-  |Neg(Neg(x))-> nnf x
-  |Neg(x)->Neg(nnf x) 
+  |Atom x->Atom x 
   |Disj(x,y)->Disj(nnf x,nnf y)
   |Conj(x,y)->Conj(nnf x, nnf y)
-  |Impl(x,y)->Disj(Neg(nnf x),nnf y) 
+  |Impl(x,y)->Disj(nnf (Neg(x)),nnf y) 
+  |Neg(Atom x)->Neg(Atom x)
+  |Neg(Neg(x))->nnf x
+  |Neg(Disj(x,y))->Conj(nnf (Neg(x)),nnf (Neg(y)))
+  |Neg(Conj(x,y))->Disj(nnf (Neg(x)),nnf (Neg(y)))
+  |Neg(Impl(x,y))->Conj(nnf x,nnf (Neg(y)))
+                     
+                  
+                     
 ;;
