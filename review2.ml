@@ -138,7 +138,23 @@ let rec eval env = function
     variables. This means "don't know".
  *)
 let rec eval_maybe (env : bool list) (phi : exp) : bool option =
-  assert false
+  match phi with
+  |Disj(e1,e2)->
+      begin 
+        match (eval_maybe env e1,eval_maybe env e2) with
+        |(Some x,None)-> Some x
+        |(None, Some x)->Some x
+        |_-> None 
+      end
+  |Neg e1->
+      begin
+        match eval_maybe env e1 with
+        |Some x-> Some (not x) 
+        |_->None
+      end 
+  |Var k-> (lookup env k) 
+;;
+eval_maybe ([true]) (v 1 +++ v 0);;
 
 exception Unsatsifiable
 
